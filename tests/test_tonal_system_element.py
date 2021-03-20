@@ -21,12 +21,45 @@ class TestTonalSystemElement(unittest.TestCase):
         result = self.e1 + self.e2
         e3 = TonalSystemElement(1, 12)
         self.assertEqual(e3, result)
-        
-      #  s = e1 + e2
-    #  assertEqual()  
-    
-    #def test_
-    def test_mul(self):  
-  
-if __name__ == '__main__':  
+
+    def test_sub(self):
+        result = self.e1 - self.e2
+        e3 = TonalSystemElement(1, 12)
+        self.assertEqual(e3, result)
+
+    def test_mul(self):
+        result = self.e1 * self.e2
+        e3 = TonalSystemElement(160, 12)
+        self.assertEqual(e3, result)
+
+    def test_lt(self):
+
+        e3 = TonalSystemElement(8, 12)
+        self.assertTrue(self.e2 < self.e1)
+        self.assertFalse(e3 < self.e1)
+        self.assertFalse(self.e1 < self.e2)
+
+    def test_gt(self):
+        e3 = TonalSystemElement(8, 12)
+        self.assertTrue(self.e1 > self.e2)
+        self.assertFalse(e3 > self.e1)
+        self.assertFalse(self.e2 > self.e1)
+
+    def test_le(self):
+        e3 = TonalSystemElement(8, 12)
+        self.assertTrue(self.e2 <= self.e1)
+        self.assertTrue(e3 <= self.e1)
+        self.assertFalse(self.e1 <= self.e2)
+
+    def test_ge(self):
+        e3 = TonalSystemElement(8, 12)
+        self.assertTrue(self.e1 >= self.e2)
+        self.assertTrue(e3 >= self.e1)
+        self.assertFalse(self.e2 >= e3)
+
+    def test_inverse(self):
+        self.assertEqual(None, self.e1.inverse())
+        self.assertEqual(self.e2, self.e2.inverse())
+
+if __name__ == '__main__':
     unittest.main()  
