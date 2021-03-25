@@ -24,8 +24,11 @@ class TestTonalSystemElement(unittest.TestCase):
 
     def test_sub(self):
         result = self.e1 - self.e2
-        e3 = TonalSystemElement(1, 12)
+        e3 = TonalSystemElement(3, 12)
         self.assertEqual(e3, result)
+
+        result2 = self.e2 - self.e1
+        self.assertEqual(TonalSystemElement(9, 12), result2)
 
     def test_mul(self):
         result = self.e1 * self.e2

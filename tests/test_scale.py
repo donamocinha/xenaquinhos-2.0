@@ -1,6 +1,6 @@
 import unittest
 
-from domain import TonalSystemElement, Scale
+from domain import TonalSystemElement, Scale, TonalSystem
 
 
 class TestScale(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestScale(unittest.TestCase):
     # preparacenario
     def setUp(self):
         diatonic = (2, 2, 1, 2, 2, 2, 1)
-        self.s1 = Scale(12, diatonic)
+        self.s1 = Scale(12, diatonic, name="12-Pitch Diatonic Major Scale")
 
     def test_set_tonic(self):
         diatonic = [0, 2, 4, 5, 7, 9, 11]
@@ -19,11 +19,28 @@ class TestScale(unittest.TestCase):
         self.assertEqual(elements, self.s1.elements)
 
     def test_next(self):
-        diatonic = [0, 2, 4, 5, 7, 9, 11]
-        elements = [TonalSystemElement(e+1, 12) for e in diatonic]
-        self.assertEqual(TonalSystemElement(2,12).value, self.s1.next(elements[6], 2).value)
+        re = TonalSystemElement(2, 12)
+        self.assertEqual(re, self.s1.next(0, 1))
 
     def test_export_scala_files(self):
+        f = open('scala_files/z12_7_test.scl', 'r')
+        f2 = open('scala_files/z12_7_test.kbm', 'r')
+        content = f.read()
+        content2 = f2.read()
+
+        self.s1.export_scala_files('z12_7.scl')
+        f_result = open('scala_files/z12_7.scl', 'r')
+        f2_result = open('scala_files/z12_7.kbm', 'r')
+        result = f_result.read()
+        result2 = f2_result.read()
+
+        self.assertEqual(content, result)
+        self.assertEqual(content2, result2)
+
+        f_result.close()
+        f2_result.close()
+        f.close()
+        f2.close()
         pass
 
     def test_show(self):

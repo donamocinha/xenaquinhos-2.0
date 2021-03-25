@@ -7,16 +7,15 @@ class TestGCycle(unittest.TestCase):
 
     def setUp(self):
         diatonic = (2, 2, 1, 2, 2, 2, 1)
-        self.s1 = GCycle(diatonic)
-
-        diatonic = (2, 2, 1, 2, 2, 2, 1)
+        self.c1 = GCycle(TonalSystemElement(7, 12))
         self.s1 = Scale(12, diatonic)
 
     def test_diatonic_scale(self):
-        scale = Scale(12, self.s1.cur_struct, 0)
-        self.assertEqual(scale.elements, self.s1.diatonic_scale(0).elements)
-        self.assertEqual(scale.system_size, self.s1.diatonic_scale(0).system_size)
-        self.assertEqual(scale.interval_struct, self.s1.diatonic_scale(0).interval_struct)
+        self.assertEqual(self.s1, self.c1.diatonic_scale(0))
+    
+    def test_next(self):
+        do = TonalSystemElement(0, 12)
+        self.assertEqual(do, self.c1.next(5, 1))
   
 if __name__ == '__main__':  
     unittest.main()  
