@@ -6,7 +6,7 @@ from fractions import Fraction
 
 
 #TODO: CHECAGEM DE TIPOS
-
+#TODO: __repr__(self, o), __str__
 class TonalSystemElement:
     def __init__(self, value, module):
         self.value = value % module
@@ -63,7 +63,7 @@ class Scale:
         self.interval_struct = interval_struct
         self.set_tonic(tonic)
         self.name = name
-        # self.interval_vector = self.vector()
+        self.interval_vector = self.vector()
 
     def set_tonic(self, tonic):
         self.elements = []
@@ -188,7 +188,9 @@ class TonalSystem:
         cycle = GCycle(self.generator)
         return cycle.diatonic_scale(0)
 
+    #TODO: Função que retorna possibilidades de geradores
     def set_generator(self, g: Union[TonalSystemElement, int]):
+        assert math.gcd(g, self.cardinality)==1, "Element must be a generator"
         self.generator = TonalSystemElement(g, self.cardinality) if isinstance(g, int) else g
 
     def balzano_diagram(self, minor, major):
