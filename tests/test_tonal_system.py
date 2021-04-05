@@ -9,6 +9,10 @@ class TestTonalSystem(unittest.TestCase):
         self.diatonic_values = [0, 2, 4, 5, 7, 9, 11]
         self.diatonic_struct = (2, 2, 1, 2, 2, 2, 1)
     
+    def test_get_generators(self):
+        gens = [1, 5, 7, 11]
+        self.assertEqual([TonalSystemElement(x, 12) for x in gens], self.t1.get_generators())
+    
     def test_set_generator(self):
         self.t1.set_generator(7)
         self.assertEqual(TonalSystemElement(7, 12), self.t1.generator)

@@ -6,6 +6,10 @@ class TestTonalSystemElement(unittest.TestCase):
     def setUp(self):
         self.e1 = TonalSystemElement(8, 12)
         self.e2 = TonalSystemElement(5, 12)
+    
+    def test_is_generator(self):
+        self.assertFalse(self.e1.is_generator())
+        self.assertTrue(self.e2.is_generator())
 
     def test_eq(self):
         e3 = TonalSystemElement(8, 12)

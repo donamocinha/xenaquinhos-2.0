@@ -6,11 +6,13 @@ from fractions import Fraction
 
 
 #TODO: CHECAGEM DE TIPOS
-#TODO: __repr__(self, o), __str__
 class TonalSystemElement:
     def __init__(self, value, module):
         self.value = value % module
         self.module = module
+    
+    def is_generator(self):
+        return math.gcd(self.value, self.module)==1
 
     def __add__(self, o):
         assert isinstance(o, TonalSystemElement), f"Cannot add TonalSystemElement to {type(o)}"
@@ -49,12 +51,25 @@ class TonalSystemElement:
             for i in range(self.module):
                 if (i * self.value) % self.module == 1:
                     return TonalSystemElement(i, self.module)
-            #TODO: Exceção?
+    
+    def __str__(self):
+        return str(self.value)
 
 class BalzanoDiagram:
-    def __init__(self, matrix):
-        self.matrix = matrix
-
+    def __init__(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
+        self.matrix = self.build_matrix(cardinality, x, y)
+    
+    def build_matrix(self, cardinality, x, y):
+        matrix = []
+        for i in range(y.value+1):
+            row = []
+            for j in range(x.value+1):
+                row.append(TonalSystemElement(i*x.value + j*y.value, cardinality))
+            matrix.append(row)
+        return matrix
+    
+    def __str__(self):
+        return str(self.matrix)
 
 
 class Scale:
@@ -130,6 +145,13 @@ class Scale:
         assert isinstance(o, Scale)
         return (sorted(self.elements) == sorted(o.elements)) and (self.system_size==o.system_size)
     
+    def __str__(self):
+        output_str = self.name
+        output_str += f'\nElements: {[e.value for e in self.elements]}'
+        output_str += f'\nInterval Vector: {self.interval_vector}'
+        output_str += f'\nInterval Struct: {self.interval_struct}\n'
+        return output_str
+    
 class GCycle:
 
     def __init__(self, generator: TonalSystemElement):
@@ -156,12 +178,15 @@ class GCycle:
 
         struct = tuple((sc_elements[i]-sc_elements[i-1]).value for i in range(1, len(sc_elements)))
 
-        return Scale(self.generator.module, struct, tonic=tonic)
+        return Scale(self.generator.module, struct, tonic=tonic, name="Diatonic Scale")
 
     def next(self, elem: Union[TonalSystemElement, int], steps: int):
         real_elem = TonalSystemElement(elem, self.generator.module) if isinstance(elem, int) else elem
         next_index = (self.elements.index(real_elem) + steps) % len(self.elements)
         return copy.deepcopy(self.elements[next_index])
+    
+    def __str__(self):
+        return f'Cycle: {[str(e) for e in self.elements]}'
 
     ## show
     def show(self):
@@ -173,25 +198,38 @@ class TonalSystem:
         self.cardinality = n
         self.generator = TonalSystemElement(1, n)
 
-    #TODO: Debater a possibilidade de passar aqui diretamente a estrutura ao invés dos elementos
-    def scale(self, elements):
-        elements.sort()
-        if all(isinstance(e, TonalSystemElement) for e in elements):
-            circle_elements = elements + [elements[0]]
-        elif all(isinstance(e, int) for e in elements):
-            circle_elements = [TonalSystemElement(e, self.cardinality) for e in elements] + [TonalSystemElement(elements[0], self.cardinality)]
 
-        struct = tuple((circle_elements[i]-circle_elements[i-1]).value for i in range(1, len(circle_elements)))
+    def scale(self, elements, struct=[]):
+        assert (len(elements)==0) ^ (len(struct)==0), "argument must be either elements or struct"
+        if len(elements)!=0:
+            elements.sort()
+            if all(isinstance(e, TonalSystemElement) for e in elements):
+                circle_elements = elements + [elements[0]]
+            elif all(isinstance(e, int) for e in elements):
+                circle_elements = [TonalSystemElement(e, self.cardinality) for e in elements] + [TonalSystemElement(elements[0], self.cardinality)]
+
+            struct = tuple((circle_elements[i]-circle_elements[i-1]).value for i in range(1, len(circle_elements)))
+
         return Scale(self.cardinality, struct)
 
     def diatonic_scale(self):
         cycle = GCycle(self.generator)
         return cycle.diatonic_scale(0)
 
-    #TODO: Função que retorna possibilidades de geradores
+    def get_generators(self):
+        n = self.cardinality
+        return [TonalSystemElement(x, n) for x in range(n) if math.gcd(x, n)==1]
+
     def set_generator(self, g: Union[TonalSystemElement, int]):
-        assert math.gcd(g, self.cardinality)==1, "Element must be a generator"
-        self.generator = TonalSystemElement(g, self.cardinality) if isinstance(g, int) else g
+        if isinstance(g, int):
+            assert math.gcd(g, self.cardinality)==1, "Element must be a generator"
+            self.generator = TonalSystemElement(g, self.cardinality)
+        elif isinstance(g, TonalSystemElement):
+            assert g.is_generator(), "Element must be a generator"
+            self.generator = g
+        
+    def __str__(self):
+        return f'{self.cardinality}-Fold Tonal System with generator {self.generator}'
 
     def balzano_diagram(self, minor, major):
         pass

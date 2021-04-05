@@ -4,9 +4,7 @@ z12 = TonalSystem(12)
 
 z12.set_generator(7)
 diatonic = z12.diatonic_scale()
-print(diatonic.interval_struct)
-print(diatonic.interval_vector)
-print([e.value for e in diatonic.elements])
+print(diatonic)
 
 diatonic.set_tonic(5)
 print([e.value for e in diatonic.elements])
