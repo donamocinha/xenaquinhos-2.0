@@ -9,11 +9,11 @@ class TestBalzanoDiagram(unittest.TestCase):
         self.diatonic_struct = [2, 2, 1, 2, 2, 2, 1]
     
     def test_build_matrix(self):
-        m = [[0, 4, 8, 0],
-                [3, 7, 11, 3],
-                [6, 10, 2, 6],
-                [9, 1, 5, 9],
-                [0, 4, 8, 0]]
+        m = [[2, 6, 10, 2],
+                [5, 9, 1, 5],
+                [8, 0, 4, 8],
+                [11, 3, 7, 11],
+                [2, 6, 10, 2]]
         
         el_matrix = [[TonalSystemElement(e, 12) for e in row] for row in m]
         self.assertEqual(el_matrix, self.b1.matrix)

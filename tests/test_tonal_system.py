@@ -28,5 +28,9 @@ class TestTonalSystem(unittest.TestCase):
         self.t1.set_generator(7)
         self.assertEqual(Scale(12, self.diatonic_struct), self.t1.diatonic_scale())
 
+    def test_get_midi_pitch_classes(self):
+        midi_pitches = [i for i in range(12)]
+        self.assertEqual(midi_pitches, self.t1.get_midi_pitch_classes())
+        
 if __name__ == '__main__':  
     unittest.main()  

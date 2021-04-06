@@ -13,6 +13,9 @@ class TonalSystemElement:
     def __init__(self, value, module):
         self.value = value % module
         self.module = module
+
+        self.cents = self.value * (1200/self.module)
+        self.midi = (self.cents/100)
     
     def is_generator(self):
         return math.gcd(self.value, self.module)==1
@@ -60,6 +63,7 @@ class TonalSystemElement:
 
 class BalzanoDiagram:
     def __init__(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
+        self.cardinality = cardinality
         self.matrix = self.build_matrix(cardinality, x, y)
     
     def build_matrix(self, cardinality, x, y):
@@ -76,7 +80,7 @@ class BalzanoDiagram:
         actual = self.matrix[pos[0]][pos[1]]
         region = []
         step = 0
-        while actual.value != 0 or len(region)==0:
+        while actual.value != self.matrix[0][0].value or len(region)==0:
             if len(region)>len(scale): return False
 
             region.append(actual)
@@ -126,7 +130,6 @@ class BalzanoDiagram:
 
         plt.axis('off')
 
-
         ax.grid()
         plt.show()
 
@@ -154,6 +157,7 @@ class Scale:
         next_index = (self.elements.index(real_elem) + steps) % len(self.elements)
         return copy.deepcopy(self.elements[next_index])
 
+    #TODO: garantir que file_name tenha .scl e que o kbm substitua.
     def export_scala_files(self, file_name, kbm_pattern=None):
         chroma_cents = 1200/self.system_size
         check_or_create_folder('scala_files')
@@ -293,6 +297,10 @@ class TonalSystem:
         elif isinstance(g, TonalSystemElement):
             assert g.is_generator(), "Element must be a generator"
             self.generator = g
+    
+    def get_midi_pitch_classes(self):
+        n = self.cardinality
+        return [TonalSystemElement(i, n).midi for i in range(n)]
 
     def balzano_diagram(self, minor, major):
         n = self.cardinality

@@ -67,6 +67,10 @@ class TestTonalSystemElement(unittest.TestCase):
     def test_inverse(self):
         self.assertEqual(None, self.e1.inverse())
         self.assertEqual(self.e2, self.e2.inverse())
+    
+    def test_midi(self):
+        self.assertEqual(5, self.e2.midi)
+        self.assertEqual(500, self.e2.cents)
 
 if __name__ == '__main__':
     unittest.main()  
