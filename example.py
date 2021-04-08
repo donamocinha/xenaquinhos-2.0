@@ -1,5 +1,4 @@
-from domain import TonalSystem, Scale, TonalSystemElement
-from utils import transpose_to_octave
+from domain import TonalSystem, Scale, TonalSystemElement, transpose_to_octave
 from scamp import Session, TimeSignature, wait
 import random as rd
 
