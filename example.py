@@ -10,6 +10,8 @@ max_port = 3
 #TENTATIVA DE MÚSICA "ATONAL"
 z = TonalSystem(size)
 z.set_generator(g)
+diagram = z.balzano_diagram(5,6)
+diagram.show()
 midi_classes = z.get_midi_pitch_classes()
 bass_octave = transpose_to_octave(midi_classes, 1)
 guitar_octave = transpose_to_octave(midi_classes, 2)
@@ -26,9 +28,11 @@ def build_arpeggio(s_size, base_note, last_notes, max_port):
     return [base_note, last_notes[0]+rd.randint(-max_port, max_port), last_notes[1]+rd.randint(-max_port, max_port)] *2
 
 def play_part(inst, pitches, octave):
-    for p in pitches:
+    for i in range(len(pitches[0])):
+        choice = 0 if len(pitches)!=2 else rd.choice([0,1])
+        p = pitches[choice][i]
         real_pitch = octave[p] if p<size else octave[p%size]+size
-        inst.play_note(real_pitch, 0.8, 8/len(pitches))
+        inst.play_note(real_pitch, 0.8, 8/len(pitches[0]))
 
 bass_melody = build_melody(4, size, max_port)
 
@@ -38,11 +42,12 @@ for b in bass_melody[1:]:
     guitar_chords += build_arpeggio(size, b, guitar_chords[-2:], max_port)
 
 flute_melody = build_melody(8, size, max_port)
+flute_melody_2 = build_melody(8, size, max_port)
 
-melodies = [bass_melody, guitar_chords, flute_melody]
+melodies = [[bass_melody], [guitar_chords], [flute_melody, flute_melody_2]]
 octaves = [bass_octave, guitar_octave, flute_octave]
 
-
+'''
 s = Session()
 s.print_default_soundfont_presets()
 [print(m) for m in melodies]
@@ -52,3 +57,4 @@ for i in range(8):
     [s.fork(play_part, args=[p, melodies[i], octaves[i]]) for i, p in enumerate(parts)]
     s.wait_for_children_to_finish()
 performance = s.stop_transcribing()
+'''

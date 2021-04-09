@@ -1,5 +1,6 @@
 from .tonal_system_element import TonalSystemElement
 import matplotlib.pyplot as plt
+import numpy as np
 
 class BalzanoDiagram:
     def __init__(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
