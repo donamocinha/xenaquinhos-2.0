@@ -31,6 +31,10 @@ class TestTonalSystem(unittest.TestCase):
     def test_get_midi_pitch_classes(self):
         midi_pitches = [i for i in range(12)]
         self.assertEqual(midi_pitches, self.t1.get_midi_pitch_classes())
+    
+    def test_midi_pitch(self):
+        self.assertEqual(7, self.t1.midi_pitch(7))
+        self.assertEqual(67, self.t1.midi_pitch(7, 5))
         
 if __name__ == '__main__':  
     unittest.main()  
