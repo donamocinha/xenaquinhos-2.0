@@ -6,6 +6,7 @@ class BalzanoDiagram:
     def __init__(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
         self.cardinality = cardinality
         self.matrix = self.build_matrix(cardinality, x, y)
+        self.dimensions = (x.value+1, y.value+1)
     
     def build_matrix(self, cardinality, x, y):
         matrix = []
@@ -41,16 +42,15 @@ class BalzanoDiagram:
         return False
     
     def show(self):
-        print(self)
         fig, ax = plt.subplots()
+        p = (0.007*self.cardinality)
         
         i,j = 0.5, 0.5
-        p = 0.08
         h = False
         while i<=len(self.matrix) and j<=len(self.matrix[0]):
             dest = (i+1, j) if h else (i, j+1)
-            px = 0.1 if h else 0
-            py = 0.1-px
+            px = p if h else 0
+            py = p-px
             color = 'r' if h else 'b'
             plt.plot([i+px, dest[0]-px], [j+py+0.05, dest[1]-py], color=color)
             if i+1<=len(self.matrix[0]):
