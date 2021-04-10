@@ -18,9 +18,19 @@ class Scale:
             actual += i
 
     def next(self, elem, steps):
-        real_elem = TonalSystemElement(elem, self.system_size) if isinstance(elem, int) else elem
+        if isinstance(elem, int):
+            real_elem = TonalSystemElement(elem, self.system_size)
+            octave = int(elem//self.system_size)
+        else:
+            real_elem = elem
+            octave = 0
+        
         next_index = (self.elements.index(real_elem) + steps) % len(self.elements)
-        return copy.deepcopy(self.elements[next_index])
+        if steps>0 and self.elements[next_index].value<real_elem.value:
+            octave+=1
+        elif steps<0 and self.elements[next_index].value>real_elem.value:
+            octave-=1
+        return self.elements[next_index].value + (octave*self.system_size)
 
     #TODO: garantir que file_name tenha .scl e que o kbm substitua.
     def export_scala_files(self, file_name, kbm_pattern=None):
@@ -71,6 +81,12 @@ class Scale:
                 dist = min((el - pivot).value % self.system_size, (pivot - el).value % self.system_size)
                 v[dist - 1] += 1
         return v
+    
+    def get_midi_pitch_classes(self):
+        return [e.midi for e in self.elements]
+
+    def get_elements(self):
+        return [e.value for e in self.elements]
     
     def __eq__(self, o):
         if not isinstance(o, Scale):

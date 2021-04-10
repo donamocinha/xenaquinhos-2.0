@@ -20,7 +20,7 @@ class TestScale(unittest.TestCase):
 
     def test_next(self):
         re = TonalSystemElement(2, 12)
-        self.assertEqual(re, self.s1.next(0, 1))
+        self.assertEqual(re.value, self.s1.next(0, 1))
 
     def test_export_scala_files(self):
         f = open('scala_files/z12_7_test.scl', 'r')
@@ -42,6 +42,10 @@ class TestScale(unittest.TestCase):
         f.close()
         f2.close()
         pass
+
+    def test_get_elements(self):
+        diatonic = [0, 2, 4, 5, 7, 9, 11]
+        self.assertEqual(diatonic, self.s1.get_elements())
 
     def test_show(self):
         pass

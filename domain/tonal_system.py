@@ -46,7 +46,9 @@ class TonalSystem:
         return [TonalSystemElement(i, n).midi for i in range(n)]
     
     def midi_pitch(self, pitch_class, oct=0):
-        return TonalSystemElement(pitch_class, self.cardinality).midi + (self.cardinality*oct)
+        if pitch_class>=self.cardinality:
+            oct += int(pitch_class//self.cardinality)
+        return TonalSystemElement(pitch_class, self.cardinality).midi + (12*oct)
 
     def balzano_diagram(self, minor, major):
         n = self.cardinality
