@@ -2,6 +2,8 @@ from .tonal_system_element import TonalSystemElement
 from .scale import Scale
 from typing import Union
 import copy
+import numpy as np
+import matplotlib.pyplot as plt
 
 class GCycle:
     def __init__(self, generator: TonalSystemElement):
@@ -38,6 +40,21 @@ class GCycle:
     def __str__(self):
         return f'Cycle: {[str(e) for e in self.elements]}'
 
-    ## show
     def show(self):
-        pass
+        r = 10
+        angulo = 2 * np.pi / self.generator.module
+        ciclo = self.elements
+        x = [ciclo[0].value]
+        y = [r]
+
+        for i in range(1, self.generator.module + 1):
+            x.append(r * np.sin(i * angulo))
+            y.append(r * np.cos(i * angulo))
+
+        # plt.plot(x, y, 'bo', markersize=20)
+        plt.plot(x, y, markersize=20)
+        for i in range(self.generator.module):
+            #plt.annotate(ciclo[i], (x[i], y[i]))
+            plt.text(x[i], y[i],ciclo[i])
+        plt.axis('off')
+        plt.show()

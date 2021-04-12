@@ -44,8 +44,9 @@ class TonalSystem:
     def get_midi_pitch_classes(self):
         n = self.cardinality
         return [TonalSystemElement(i, n).midi for i in range(n)]
-    
+
     def midi_pitch(self, pitch_class, oct=0):
+        oct += 2
         if pitch_class>=self.cardinality:
             oct += int(pitch_class//self.cardinality)
         return TonalSystemElement(pitch_class, self.cardinality).midi + (12*oct)
