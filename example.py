@@ -11,9 +11,9 @@ midi_pitches = diatonic.get_midi_pitch_classes() #[0, 0.6, 1.2, 1.8, 2.4, 3.0, .
 
 central_note = 100
 
-microtonal_melody_1 = [rd.choice(midi_classes) for _ in range(12)]
-microtonal_melody_2 = [rd.choice(midi_pitches) for _ in range(12)]
-microtonal_melody_3 = [diatonic.next(central_note, rd.randint(-5, 5)) for _ in range(12)]
+microtonal_melody_1 = [rd.choice(midi_classes) for _ in range(24)]
+microtonal_melody_2 = [rd.choice(midi_pitches) for _ in range(24)]
+microtonal_melody_3 = [diatonic.next(central_note, rd.randint(-5, 5)) for _ in range(24)]
 
 print([z.midi_pitch(e) for e in microtonal_melody_3])
 

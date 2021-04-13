@@ -17,6 +17,7 @@ class Scale:
             self.elements.append(TonalSystemElement(actual, self.system_size))
             actual += i
 
+    #TODO central_note
     def next(self, elem, steps):
         if isinstance(elem, int):
             real_elem = TonalSystemElement(elem, self.system_size)
