@@ -7,6 +7,7 @@ class GCycle:
     def __init__(self, generator: TonalSystemElement):
         self.generator = generator
         self.elements = self.generate_cycle()
+        self.scale_sizes = sorted([self.generator.inverse().value, self.generator.inverse().symmetrical().value])
 
     def generate_cycle(self):
         elements = [TonalSystemElement(0, self.generator.module)]
@@ -14,6 +15,8 @@ class GCycle:
             elements.append(elements[-1] + self.generator)
         return elements
 
+    #TODO: Gerar escala diatônica e pentatônica, dependendo das características 
+    #TODO: Gerar no modo dórico generalizado
     def diatonic_scale(self, tonic):
         length = self.generator.inverse().value
 
@@ -36,7 +39,10 @@ class GCycle:
         return copy.deepcopy(self.elements[next_index])
     
     def __str__(self):
-        return f'Cycle: {[str(e) for e in self.elements]}'
+        resp_str = f'\n*************Cycle:***************\n'
+        resp_str += f'Elements: {[str(e) for e in self.elements]}\n'
+        resp_str += f'Scale Sizes: {self.scale_sizes[0]} {self.scale_sizes[1]}'
+        return resp_str
 
     ## show
     def show(self):

@@ -31,6 +31,16 @@ class Scale:
         elif steps<0 and self.elements[next_index].value>real_elem.value:
             octave-=1
         return self.elements[next_index].value + (octave*self.system_size)
+        
+    #TODO: usar algoritmo de Manacher para otimizar
+    def find_symmetric_rotation(self):
+        struct = list(self.interval_struct)
+        for i in range(0, len(struct)):
+            rotated = struct[i:]+struct[:i]
+            if rotated == rotated[::-1]:
+                return i
+        return -1
+    
 
     #TODO: garantir que file_name tenha .scl e que o kbm substitua.
     def export_scala_files(self, file_name, kbm_pattern=None):
@@ -91,7 +101,7 @@ class Scale:
     def __eq__(self, o):
         if not isinstance(o, Scale):
             return False
-        return (sorted(self.elements) == sorted(o.elements)) and (self.system_size==o.system_size)
+        return (self.interval_struct==o.interval_struct) and (self.system_size==o.system_size)
     
     def __len__(self):
         return len(self.elements)

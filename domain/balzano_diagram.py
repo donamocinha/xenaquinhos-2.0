@@ -1,73 +1,135 @@
 from .tonal_system_element import TonalSystemElement
+from .gcycle import GCycle
 import matplotlib.pyplot as plt
 import numpy as np
 
 class BalzanoDiagram:
     def __init__(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
         self.cardinality = cardinality
+        self.scale = GCycle(x+y).diatonic_scale(0)
         self.matrix = self.build_matrix(cardinality, x, y)
-        self.dimensions = (x.value+1, y.value+1)
+        self.compact_matrix = self.build_compact_matrix(cardinality, x, y)
+        self.dims = (len(self.matrix), len(self.matrix[0]))
     
-    def build_matrix(self, cardinality, x, y):
+    def build_compact_matrix(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
         matrix = []
-        for i in range(-2, y.value-1):
+        gen = x+y
+        #TODO: classe subgrupo??
+        dims = [int((gen.inverse().value+1)/2) +1, int((gen.inverse().value-1)/2)+1]
+
+        
+        rotation = self.scale.find_symmetric_rotation()
+        initial = self.scale.elements[rotation] if rotation!=-1 else self.scale.elements[0]
+        init_pos = (initial*gen.inverse()).value
+        coords = (init_pos%x.subgroup(), init_pos%y.subgroup())
+        for i in range(coords[0], coords[0]+dims[0]):
             row = []
-            for j in range(-1, x.value):
+            for j in range(coords[1], coords[1]+dims[1]):
                 row.append(TonalSystemElement(i*x.value + j*y.value, cardinality))
             matrix.append(row)
         return matrix
     
-    def contains_scale(self, scale):
+    def build_matrix(self, cardinality, x, y):
+        matrix = []
+        gen = x+y
+        #TODO: classe subgrupo??
+        dims = [x.subgroup()+1, y.subgroup()+1]
+
+        rotation = self.scale.find_symmetric_rotation()
+        initial = self.scale.elements[rotation] if rotation!=-1 else self.scale.elements[0]
+        init_pos = (initial*gen.inverse()).value
+        coords = (init_pos%x.subgroup(), init_pos%y.subgroup())
+
+        for i in range(coords[0], coords[0]+dims[0]):
+            row = []
+            for j in range(coords[1], coords[1]+dims[1]):
+                row.append(TonalSystemElement(i*x.value + j*y.value, cardinality))
+            matrix.append(row)
+        return matrix
+    
+    def contains_scale(self):
         pos = [0,0]
-        actual = self.matrix[pos[0]][pos[1]]
+        matrix = self.matrix
+        actual = matrix[pos[0]][pos[1]]
         region = []
         step = 0
-        while actual.value != self.matrix[0][0].value or len(region)==0:
-            if len(region)>len(scale): return False
-
+        while len(region)!=len(self.scale.elements)+1:
             region.append(actual)
             pos[step]+=1
             step = (step+1)%2
-            actual = self.matrix[pos[0]][pos[1]]
+            actual = matrix[pos[0]%(len(matrix)-1)][pos[1]%(len(matrix[0])-1)]
         
-        if len(region)!=len(scale): return False
-        region.sort()
+        if region[-1]!=region[0]: return False
+        region = sorted(region[:-1])
         region.append(region[0])
 
         r_struct = list((region[i]-region[i-1]).value for i in range(1, len(region)))
-        s_struct = list(scale.interval_struct)
+        s_struct = list(self.scale.interval_struct)
         for i in range(len(s_struct)):
             if (r_struct[i:]+r_struct[:i]) == s_struct: return True
         
         return False
     
-    def show(self):
+    #TODO: mostrar escala apenas se a escala do gerador estiver contida ali dentro
+    def show(self, compact=True):
         fig, ax = plt.subplots()
-        p = (0.007*self.cardinality)
-        
-        i,j = 0.5, 0.5
-        h = False
-        while i<=len(self.matrix) and j<=len(self.matrix[0]):
-            dest = (i+1, j) if h else (i, j+1)
-            px = p if h else 0
-            py = p-px
-            color = 'r' if h else 'b'
-            plt.plot([i+px, dest[0]-px], [j+py+0.05, dest[1]-py], color=color)
-            if i+1<=len(self.matrix[0]):
-                plt.plot([i+p, i+1-p], [j+p, j+1-p], color='g')
-            h = not h
-            i, j = dest
+
+        matrix = self.matrix if not compact else self.compact_matrix
+        dims = [len(matrix), len(matrix[0])]
+
+        if self.contains_scale():
+
+            #Paddings
+            pad_x = 0.02*(dims[1]+1)
+            pad_y = 0.021*(dims[0]+1)
+            p = (pad_x+pad_y)/2
+            
+            #i and j handle matrix; x and y handle the coordinates
+            i, j = 0, 0
+            x, y = 0.5, 0.5
+
+            #First step is vertical TODO: checar qual é o primeiro passo com base no tipo da escala
+            h = False
+
+            #Draw matrix lines till it reaches the start element again
+            while (matrix[i][j]!=matrix[0][0] or (i,j)==(0,0)):
+                #If step is horizontal, increments column; else increments row
+                dest = (i,(j+1)%dims[1]) if h else ((i+1)%dims[0], j)
+                pos_dest = (0.5+dest[1], 0.5+dest[0])
+
+                #Compute paddings and color
+                px = pad_x if h else 0
+                py = 0 if h else pad_y
+                color = 'r' if h else 'b'
+
+                #Draw line and diagonal if needed
+                if (dest[0]<dims[0] and dest[1]<dims[1]) and (dest[0]>=i and dest[1]>=j):
+                    plt.plot([x+px, pos_dest[0]-px], [y+py, pos_dest[1]-py], color=color)
+                    if (i+1 < dims[0]) and (j+1 < dims[1]) and (matrix[dest[0]][dest[1]]!=matrix[0][0]):
+                        plt.plot([x+p, x+1-p], [y+p, y+1-p], color='g')
+                    h = not h
+
+
+                if dest[0]<i:
+                    plt.plot([x-1+pad_x, x-pad_x], [0.5, 0.5], color='r')
+                    plt.plot([x-1+p, x-p], [0.5+p, 1.5-p], color='g')
+                elif dest[1]<j:
+                    plt.plot([0.5, 0.5], [y-pad_y, y-1+pad_y], color='b')
+                    plt.plot([0.5+p, 1.5-p], [y-1+p, y-p], color='g')
+
+                i, j = dest
+                x, y = pos_dest
 
         
-        for i in range(len(self.matrix)):
-            for j in range(len(self.matrix[i])):
-                el = self.matrix[i][j]
+        for i in range(dims[0]):
+            for j in range(dims[1]):
+                el = matrix[i][j]
                 ax.text(j+0.5, i+0.5, str(el), va='center', ha='center')
 
-        ax.set_xlim(0, len(self.matrix[0]))
-        ax.set_ylim(0, len(self.matrix))
-        ax.set_xticks(np.arange(len(self.matrix[0])))
-        ax.set_yticks(np.arange(len(self.matrix)))
+        ax.set_xlim(0, dims[1])
+        ax.set_ylim(0, dims[0])
+        ax.set_xticks(np.arange(dims[1]))
+        ax.set_yticks(np.arange(dims[0]))
 
         plt.axis('off')
 
