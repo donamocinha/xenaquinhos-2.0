@@ -56,10 +56,10 @@ class GCycle:
             x.append(r * np.sin(i * angle))
             y.append(r * np.cos(i * angle))
 
-        # plt.plot(x, y, 'bo', markersize=20)
         plt.plot(x, y, markersize=20)
+        plt.plot(x, y, 'wo', markersize=20)
         for i in range(self.generator.module):
-            #plt.annotate(ciclo[i], (x[i], y[i]))
-            plt.text(x[i], y[i],self.elements[i])
+            plt.text(x[i], y[i],self.elements[i], ha='center', va='center')
+        plt.axis('equal')
         plt.axis('off')
         plt.show()

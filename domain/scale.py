@@ -1,6 +1,8 @@
 from .tonal_system_element import TonalSystemElement
 from .utils import check_or_create_folder
 import copy
+import numpy as np
+import matplotlib.pyplot as plt
 
 class Scale:
     def __init__(self, system_size, interval_struct, tonic=0, name="Generic Scale"):
@@ -32,6 +34,16 @@ class Scale:
         elif steps<0 and self.elements[next_index].value>real_elem.value:
             octave-=1
         return self.elements[next_index].value + (octave*self.system_size)
+        
+    #TODO: usar algoritmo de Manacher para otimizar
+    def find_symmetric_rotation(self):
+        struct = list(self.interval_struct)
+        for i in range(0, len(struct)):
+            rotated = struct[i:]+struct[:i]
+            if rotated == rotated[::-1]:
+                return i
+        return -1
+    
 
     #TODO: garantir que file_name tenha .scl e que o kbm substitua.
     def export_scala_files(self, file_name, kbm_pattern=None):
@@ -72,7 +84,30 @@ class Scale:
         kbm.close()
 
     def show(self):
-        pass
+        r = 10
+        angle = 2 * np.pi / self.system_size
+        i = 0
+        ascending_chromatic = [i for i in range(self.system_size)]
+        x = [ascending_chromatic[0]]
+        y = [r]
+
+        for i in range(1, self.system_size + 1):
+            x.append(r * np.sin(i * angle))
+            y.append(r * np.cos(i * angle))
+
+        plt.plot(x, y, 'wo', markersize=20)
+        x_line = []
+        y_line = []
+        for i in range(self.system_size):
+            plt.text(x[i], y[i], ascending_chromatic[i], ha='center', va='center')
+        for i in self.elements:
+            x_line.append(x[i.value])
+            y_line.append(y[i.value])
+        plt.plot(x_line, y_line, markersize=20)
+        plt.plot(x_line, y_line, 'wo', markersize=20)
+        plt.axis('equal')
+        plt.axis('off')
+        plt.show()
 
     def vector(self):
         v = [0 for _ in range(int(self.system_size / 2))]
@@ -92,7 +127,7 @@ class Scale:
     def __eq__(self, o):
         if not isinstance(o, Scale):
             return False
-        return (sorted(self.elements) == sorted(o.elements)) and (self.system_size==o.system_size)
+        return (self.interval_struct==o.interval_struct) and (self.system_size==o.system_size)
     
     def __len__(self):
         return len(self.elements)

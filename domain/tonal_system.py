@@ -6,13 +6,13 @@ from typing import Union
 import math
 
 class TonalSystem:
-    def __init__(self, n):
+    def __init__(self, n, g=1):
         assert n>1, "Tonal System must have more than one element"
         self.cardinality = n
-        self.generator = TonalSystemElement(1, n)
+        self.generator = TonalSystemElement(g, n)
 
 
-    def scale(self, elements, struct=[]):
+    def scale(self, elements=[], struct=[]):
         assert (len(elements)==0) ^ (len(struct)==0), "argument must be either elements or struct"
         if len(elements)!=0:
             elements.sort()
@@ -26,8 +26,7 @@ class TonalSystem:
         return Scale(self.cardinality, struct)
 
     def diatonic_scale(self):
-        cycle = GCycle(self.generator)
-        return cycle.diatonic_scale(0)
+        return self.cycle.diatonic_scale(0)
 
     def get_generators(self):
         n = self.cardinality
@@ -40,21 +39,26 @@ class TonalSystem:
         elif isinstance(g, TonalSystemElement):
             assert g.is_generator(), "Element must be a generator"
             self.generator = g
-    
+        self.cycle = GCycle(self.generator)
+
     def get_midi_pitch_classes(self):
         n = self.cardinality
         return [TonalSystemElement(i, n).midi for i in range(n)]
 
     def midi_pitch(self, pitch_class, oct=0):
-        oct += 2
-        if pitch_class>=self.cardinality:
-            oct += int(pitch_class//self.cardinality)
+        oct+=2
+        if oct==2:
+            oct += int(pitch_class//self.cardinality) - 2
         return TonalSystemElement(pitch_class, self.cardinality).midi + (12*oct)
 
     def balzano_diagram(self, minor, major):
         n = self.cardinality
         assert TonalSystemElement(minor+major, n)==self.generator, "thirds must sum up to generator"
         return BalzanoDiagram(n, TonalSystemElement(minor, n), TonalSystemElement(major, n))
+
+    def show_gCycle(self):
+        g = GCycle(self.generator)
+        g.show()
 
     def __str__(self):
         return f'{self.cardinality}-Fold Tonal System with generator {self.generator}'
