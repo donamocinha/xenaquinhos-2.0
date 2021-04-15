@@ -52,11 +52,15 @@ class GCycle:
         x = [self.elements[0].value]
         y = [r]
 
+        figure, axes = plt.subplots()
+        cycle = plt.Circle((0, 0), r, fill=False)
+        axes.add_artist(cycle)
+
         for i in range(1, self.generator.module + 1):
             x.append(r * np.sin(i * angle))
             y.append(r * np.cos(i * angle))
 
-        plt.plot(x, y, markersize=20)
+        #plt.plot(x, y, markersize=20)
         plt.plot(x, y, 'wo', markersize=20)
         for i in range(self.generator.module):
             plt.text(x[i], y[i],self.elements[i], ha='center', va='center')
