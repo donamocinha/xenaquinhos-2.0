@@ -132,5 +132,8 @@ class BalzanoDiagram:
 
         plt.axis('off')
 
+        ax.grid()
+        plt.show()
+
     def __str__(self):
         return str([[str(x) for x in row] for row in self.matrix])
