@@ -68,13 +68,6 @@ class TestTonalSystemElement(unittest.TestCase):
         self.assertEqual(None, self.e1.inverse())
         self.assertEqual(self.e2, self.e2.inverse())
     
-    def test_symmetrical(self):
-        self.assertEqual(TonalSystemElement(4, 12), self.e1.symmetrical())
-    
-    def test_subgroup(self):
-        self.assertEqual(12, self.e2.subgroup())
-        self.assertEqual(3, self.e1.subgroup())
-    
     def test_midi(self):
         self.assertEqual(5, self.e2.midi)
         self.assertEqual(500, self.e2.cents)

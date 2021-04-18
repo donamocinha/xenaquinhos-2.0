@@ -17,7 +17,7 @@ class GCycle:
             elements.append(elements[-1] + self.generator)
         return elements
 
-    #TODO: Gerar escala diatônica e pentatônica, dependendo das características 
+    #TODO: Gerar escala diatônica e pentatônica, dependendo das características
     #TODO: Gerar no modo dórico generalizado
     def diatonic_scale(self, tonic):
         length = self.generator.inverse().value
@@ -48,19 +48,22 @@ class GCycle:
 
     def show(self):
         r = 10
-        angulo = 2 * np.pi / self.generator.module
-        ciclo = self.elements
-        x = [ciclo[0].value]
+        angle = 2 * np.pi / self.generator.module
+        x = [self.elements[0].value]
         y = [r]
 
-        for i in range(1, self.generator.module + 1):
-            x.append(r * np.sin(i * angulo))
-            y.append(r * np.cos(i * angulo))
+        figure, axes = plt.subplots()
+        cycle = plt.Circle((0, 0), r, fill=False)
+        axes.add_artist(cycle)
 
-        # plt.plot(x, y, 'bo', markersize=20)
-        plt.plot(x, y, markersize=20)
+        for i in range(1, self.generator.module + 1):
+            x.append(r * np.sin(i * angle))
+            y.append(r * np.cos(i * angle))
+
+        #plt.plot(x, y, markersize=20)
+        plt.plot(x, y, 'wo', markersize=20)
         for i in range(self.generator.module):
-            #plt.annotate(ciclo[i], (x[i], y[i]))
-            plt.text(x[i], y[i],ciclo[i])
+            plt.text(x[i], y[i],self.elements[i], ha='center', va='center')
+        plt.axis('equal')
         plt.axis('off')
         plt.show()

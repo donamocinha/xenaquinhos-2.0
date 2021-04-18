@@ -41,7 +41,7 @@ class TonalSystem:
             assert g.is_generator(), "Element must be a generator"
             self.generator = g
         self.cycle = GCycle(self.generator)
-    
+
     def get_midi_pitch_classes(self):
         n = self.cardinality
         return [TonalSystemElement(i, n).midi for i in range(n)]
@@ -56,6 +56,10 @@ class TonalSystem:
         n = self.cardinality
         assert TonalSystemElement(minor+major, n)==self.generator, "thirds must sum up to generator"
         return BalzanoDiagram(n, TonalSystemElement(minor, n), TonalSystemElement(major, n))
+
+    def show_gCycle(self):
+        g = GCycle(self.generator)
+        g.show()
 
     def __str__(self):
         return f'{self.cardinality}-Fold Tonal System with generator {self.generator}'

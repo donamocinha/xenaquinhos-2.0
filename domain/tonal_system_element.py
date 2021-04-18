@@ -41,7 +41,6 @@ class TonalSystemElement:
     def __ge__(self, o):
         return isinstance(o, TonalSystemElement) and self.value >= o.value and self.module == o.module
 
-    #Usar algoritmo extendido de Euclides para otimizar
     def inverse(self):
         if math.gcd(self.value, self.module) != 1:
             return None
@@ -49,17 +48,6 @@ class TonalSystemElement:
             for i in range(self.module):
                 if (i * self.value) % self.module == 1:
                     return TonalSystemElement(i, self.module)
-    
-    def symmetrical(self):
-        return TonalSystemElement(-self.value, self.module)
-    
-    def subgroup(self):
-        i = 1
-        value = self.value
-        while value!=0:
-            i+=1
-            value = (value+self.value)%self.module
-        return i
     
     def __str__(self):
         return str(self.value)

@@ -34,8 +34,7 @@ class TestTonalSystem(unittest.TestCase):
     
     def test_midi_pitch(self):
         self.assertEqual(7, self.t1.midi_pitch(7))
-        self.assertEqual(67, self.t1.midi_pitch(7, 3))
-        self.assertEqual(60, self.t1.midi_pitch(60))
+        self.assertEqual(67, self.t1.midi_pitch(7, 5))
         
 if __name__ == '__main__':  
     unittest.main()  
