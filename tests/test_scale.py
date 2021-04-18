@@ -57,6 +57,9 @@ class TestScale(unittest.TestCase):
         vector_int = [2, 5, 4, 3, 6, 1]
         self.assertEqual(vector_int, self.s1.vector())
 
+    def test_find_symmetric_rotation(self):
+        self.assertEqual(1, self.s1.find_symmetric_rotation())
+
 
 if __name__ == '__main__':
     unittest.main()

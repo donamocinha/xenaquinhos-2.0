@@ -25,7 +25,7 @@ for pc in microtonal_melody_1:
     p.play_note(z.midi_pitch(pc, 4), 0.8, 1/3)
 
 for pc in microtonal_melody_2:
-    p.play_note(transpose_to_octave(pc, 3), 0.8, 1/3)
+    p.play_note(transpose_to_octave(pc, 2), 0.8, 1/3)
 
 for pitch in microtonal_melody_3:
     p.play_note(z.midi_pitch(pitch), 0.8, 1/3)
