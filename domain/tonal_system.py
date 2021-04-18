@@ -10,6 +10,7 @@ class TonalSystem:
         assert n>1, "Tonal System must have more than one element"
         self.cardinality = n
         self.generator = TonalSystemElement(g, n)
+        self.cycle = GCycle(self.generator)
 
 
     def scale(self, elements=[], struct=[]):
