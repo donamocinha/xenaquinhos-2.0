@@ -58,8 +58,10 @@ class TonalSystem:
         return BalzanoDiagram(n, TonalSystemElement(minor, n), TonalSystemElement(major, n))
 
     def show_gCycle(self):
-        g = GCycle(self.generator)
-        g.show()
+        self.cycle.show()
+    
+    def show(self):
+        GCycle(TonalSystemElement(1, self.cardinality)).show()
 
     def __str__(self):
         return f'{self.cardinality}-Fold Tonal System with generator {self.generator}'
