@@ -10,16 +10,22 @@ class Scale:
     def __init__(self, system_size, interval_struct, tonic=0, name="Generic Scale"):
         self.system_size = system_size
         self.interval_struct = interval_struct
-        self.set_tonic(tonic)
+        self.tonic = tonic
+        self.elements = self.build_elements(tonic)
         self.name = name
         self.interval_vector = self.vector()
-
-    def set_tonic(self, tonic):
-        self.elements = []
+    
+    def build_elements(self, tonic):
+        elements = []
         actual = tonic
         for i in self.interval_struct:
-            self.elements.append(TonalSystemElement(actual, self.system_size))
+            elements.append(TonalSystemElement(actual, self.system_size))
             actual += i
+        return elements
+
+    def set_tonic(self, tonic):
+        self.tonic = tonic
+        self.elements = self.build_elements(tonic)
 
     # TODO central_note
     def next(self, elem, steps):
@@ -52,7 +58,7 @@ class Scale:
         check_or_create_folder('scala_files')
         f = open(f'scala_files/{file_name}', 'w')
 
-        # Escrevendo cabeçalho
+        # Headers
         f.write(f'! {file_name}\n!\n {self.name}\n {len(self.elements)}\n!')
 
         sum_interval = 0

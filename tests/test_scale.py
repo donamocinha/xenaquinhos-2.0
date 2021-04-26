@@ -9,6 +9,11 @@ class TestScale(unittest.TestCase):
     def setUp(self):
         diatonic = (2, 2, 1, 2, 2, 2, 1)
         self.s1 = Scale(12, diatonic, name="12-Pitch Diatonic Major Scale")
+    
+    def test_build_elements(self):
+        diatonic = [0, 2, 4, 5, 7, 9, 11]
+        elements = [TonalSystemElement(e, 12) for e in diatonic]
+        self.assertEqual(elements, self.s1.build_elements(0))
 
     def test_set_tonic(self):
         diatonic = [0, 2, 4, 5, 7, 9, 11]
