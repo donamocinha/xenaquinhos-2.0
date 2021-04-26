@@ -15,17 +15,17 @@ class BalzanoDiagram:
         matrix = []
         gen = x+y
         #TODO: classe subgrupo??
-        dims = [int((gen.inverse().value+1)/2) +1, int((gen.inverse().value-1)/2)+1]
+        dims = [int((gen.inverse().pitch_class+1)/2) +1, int((gen.inverse().pitch_class-1)/2)+1]
 
 
         rotation = self.scale.find_symmetric_rotation()
         initial = self.scale.elements[rotation] if rotation!=-1 else self.scale.elements[0]
-        init_pos = (initial*gen.inverse()).value
+        init_pos = (initial*gen.inverse()).pitch_class
         coords = (init_pos%x.subgroup(), init_pos%y.subgroup())
         for i in range(coords[0], coords[0]+dims[0]):
             row = []
             for j in range(coords[1], coords[1]+dims[1]):
-                row.append(TonalSystemElement(i*x.value + j*y.value, cardinality))
+                row.append(TonalSystemElement(i*x.pitch_class + j*y.pitch_class, cardinality))
             matrix.append(row)
         return matrix
 
@@ -37,13 +37,13 @@ class BalzanoDiagram:
 
         rotation = self.scale.find_symmetric_rotation()
         initial = self.scale.elements[rotation] if rotation!=-1 else self.scale.elements[0]
-        init_pos = (initial*gen.inverse()).value
+        init_pos = (initial*gen.inverse()).pitch_class
         coords = (init_pos%x.subgroup(), init_pos%y.subgroup())
 
         for i in range(coords[0], coords[0]+dims[0]):
             row = []
             for j in range(coords[1], coords[1]+dims[1]):
-                row.append(TonalSystemElement(i*x.value + j*y.value, cardinality))
+                row.append(TonalSystemElement(i*x.pitch_class + j*y.pitch_class, cardinality))
             matrix.append(row)
         return matrix
 
@@ -63,7 +63,7 @@ class BalzanoDiagram:
         region = sorted(region[:-1])
         region.append(region[0])
 
-        r_struct = list((region[i]-region[i-1]).value for i in range(1, len(region)))
+        r_struct = list((region[i]-region[i-1]).pitch_class for i in range(1, len(region)))
         s_struct = list(self.scale.interval_struct)
         for i in range(len(s_struct)):
             if (r_struct[i:]+r_struct[:i]) == s_struct: return True

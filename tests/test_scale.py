@@ -20,7 +20,7 @@ class TestScale(unittest.TestCase):
 
     def test_next(self):
         re = TonalSystemElement(2, 12)
-        self.assertEqual(re.value, self.s1.next(0, 1))
+        self.assertEqual(re.pitch_class, self.s1.next(0, 1))
 
     def test_export_scala_files(self):
         f = open('scala_files/z12_7_test.scl', 'r')

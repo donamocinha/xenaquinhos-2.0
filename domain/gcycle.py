@@ -7,9 +7,10 @@ import matplotlib.pyplot as plt
 
 class GCycle:
     def __init__(self, generator: TonalSystemElement):
+        assert generator.is_generator(), 'GCycle must be initialized with a element that is a generator of the given system'
         self.generator = generator
         self.elements = self.generate_cycle()
-        self.scale_sizes = sorted([self.generator.inverse().value, self.generator.inverse().symmetrical().value])
+        #self.scale_sizes = sorted([self.generator.inverse().pitch_class, self.generator.inverse().symmetrical().pitch_class])
 
     def generate_cycle(self):
         elements = [TonalSystemElement(0, self.generator.module)]
@@ -20,18 +21,17 @@ class GCycle:
     #TODO: Gerar escala diatônica e pentatônica, dependendo das características
     #TODO: Gerar no modo dórico generalizado
     def diatonic_scale(self, tonic):
-        length = self.generator.inverse().value
+        length = self.generator.inverse().pitch_class
 
-        start_element = TonalSystemElement(-self.generator.value, self.generator.module)
+        start_element = TonalSystemElement(-self.generator.pitch_class, self.generator.module)
         
         sc_elements = [start_element]
         for _ in range(length-1):
             sc_elements.append(sc_elements[-1]+self.generator)
         sc_elements.sort()
         sc_elements.append(sc_elements[0])
-        
 
-        struct = tuple((sc_elements[i]-sc_elements[i-1]).value for i in range(1, len(sc_elements)))
+        struct = tuple((sc_elements[i]-sc_elements[i-1]).pitch_class for i in range(1, len(sc_elements)))
 
         return Scale(self.generator.module, struct, tonic=tonic, name="Diatonic Scale")
 
@@ -43,13 +43,13 @@ class GCycle:
     def __str__(self):
         resp_str = f'\n*************Cycle:***************\n'
         resp_str += f'Elements: {[str(e) for e in self.elements]}\n'
-        resp_str += f'Scale Sizes: {self.scale_sizes[0]} {self.scale_sizes[1]}'
+        #resp_str += f'Scale Sizes: {self.scale_sizes[0]} {self.scale_sizes[1]}'
         return resp_str
 
     def show(self):
         r = 10
         angle = 2 * np.pi / self.generator.module
-        x = [self.elements[0].value]
+        x = [self.elements[0].pitch_class]
         y = [r]
 
         figure, axes = plt.subplots()

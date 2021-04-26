@@ -22,7 +22,7 @@ class TonalSystem:
             elif all(isinstance(e, int) for e in elements):
                 circle_elements = [TonalSystemElement(e, self.cardinality) for e in elements] + [TonalSystemElement(elements[0], self.cardinality)]
 
-            struct = tuple((circle_elements[i]-circle_elements[i-1]).value for i in range(1, len(circle_elements)))
+            struct = tuple((circle_elements[i]-circle_elements[i-1]).pitch_class for i in range(1, len(circle_elements)))
 
         return Scale(self.cardinality, struct)
 

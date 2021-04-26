@@ -31,11 +31,11 @@ class Scale:
             octave = 0
 
         next_index = (self.elements.index(real_elem) + steps) % len(self.elements)
-        if steps > 0 and self.elements[next_index].value < real_elem.value:
+        if steps > 0 and self.elements[next_index].pitch_class < real_elem.pitch_class:
             octave += 1
-        elif steps < 0 and self.elements[next_index].value > real_elem.value:
+        elif steps < 0 and self.elements[next_index].pitch_class > real_elem.pitch_class:
             octave -= 1
-        return self.elements[next_index].value + (octave * self.system_size)
+        return self.elements[next_index].pitch_class + (octave * self.system_size)
 
     # TODO: usar algoritmo de Manacher para otimizar
     def find_symmetric_rotation(self):
@@ -71,7 +71,7 @@ class Scale:
         if len(kbm_pattern) <= 12:
             length = 12
             kbm.write(
-                f'! {kbm_name}\n{length}\n{0}\n{127}\n{60 + self.elements[0].value}\n{69}\n440.00000\n{len(self.elements)}\n')
+                f'! {kbm_name}\n{length}\n{0}\n{127}\n{60 + self.elements[0].pitch_class}\n{69}\n440.00000\n{len(self.elements)}\n')
             kbm.write('! Mapping.')
             for e in (kbm_pattern + ['x' for _ in range(12 - len(kbm_pattern))]):
                 kbm.write(f'\n{e}')
@@ -79,7 +79,7 @@ class Scale:
         else:
             length = len(kbm_pattern)
             kbm.write(
-                f'! {kbm_name}\n{length}\n{0}\n{127}\n{60 + self.elements[0].value}\n{69}\n440.00000\n{len(self.elements)}\n')
+                f'! {kbm_name}\n{length}\n{0}\n{127}\n{60 + self.elements[0].pitch_class}\n{69}\n440.00000\n{len(self.elements)}\n')
             kbm.write('! Mapping.')
             for e in kbm_pattern:
                 kbm.write(f'\n{e}')
@@ -108,9 +108,9 @@ class Scale:
         y_line = []
         #        for i in range(self.system_size):
         for i in self.elements:
-            x_line.append(x[i.value])
-            y_line.append(y[i.value])
-            plt.text(x[i.value], y[i.value], i.value, ha='center', va='center')
+            x_line.append(x[i.pitch_class])
+            y_line.append(y[i.pitch_class])
+            plt.text(x[i.pitch_class], y[i.pitch_class], i.pitch_class, ha='center', va='center')
 
         x_line.append(x[0])
         y_line.append(y[0])
@@ -126,7 +126,7 @@ class Scale:
         scale = self.elements
         for i, pivot in enumerate(scale):
             for el in scale[i + 1:]:
-                dist = min((el - pivot).value % self.system_size, (pivot - el).value % self.system_size)
+                dist = min((el - pivot).pitch_class % self.system_size, (pivot - el).pitch_class % self.system_size)
                 v[dist - 1] += 1
         return v
 
@@ -134,7 +134,7 @@ class Scale:
         return [e.midi for e in self.elements]
 
     def get_elements(self):
-        return [e.value for e in self.elements]
+        return [e.pitch_class for e in self.elements]
 
     def __eq__(self, o):
         if not isinstance(o, Scale):
@@ -146,7 +146,7 @@ class Scale:
 
     def __str__(self):
         output_str = self.name
-        output_str += f'\nElements: {[e.value for e in self.elements]}'
+        output_str += f'\nElements: {[e.pitch_class for e in self.elements]}'
         output_str += f'\nInterval Vector: {self.interval_vector}'
         output_str += f'\nInterval Struct: {self.interval_struct}\n'
         return output_str
