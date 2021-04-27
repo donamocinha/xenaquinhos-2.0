@@ -4,14 +4,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class BalzanoDiagram:
-    def __init__(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
-        self.cardinality = cardinality
+    def __init__(self, system_size: int, x: TonalSystemElement, y: TonalSystemElement):
+        self.system_size = system_size
+        self.thirds = (x, y)
         self.scale = GCycle(x+y).diatonic_scale(0)
-        self.matrix = self.build_matrix(cardinality, x, y)
-        self.compact_matrix = self.build_compact_matrix(cardinality, x, y)
+        self.matrix = self.build_matrix(system_size, x, y)
+        self.compact_matrix = self.build_compact_matrix(system_size, x, y)
         self.dims = (len(self.matrix), len(self.matrix[0]))
 
-    def build_compact_matrix(self, cardinality: int, x: TonalSystemElement, y: TonalSystemElement):
+    def build_compact_matrix(self, system_size: int, x: TonalSystemElement, y: TonalSystemElement):
         matrix = []
         gen = x+y
         #TODO: classe subgrupo??
@@ -25,11 +26,11 @@ class BalzanoDiagram:
         for i in range(coords[0], coords[0]+dims[0]):
             row = []
             for j in range(coords[1], coords[1]+dims[1]):
-                row.append(TonalSystemElement(i*x.pitch_class + j*y.pitch_class, cardinality))
+                row.append(TonalSystemElement(i*x.pitch_class + j*y.pitch_class, system_size))
             matrix.append(row)
         return matrix
 
-    def build_matrix(self, cardinality, x, y):
+    def build_matrix(self, system_size, x, y):
         matrix = []
         gen = x+y
         #TODO: classe subgrupo??
@@ -43,7 +44,7 @@ class BalzanoDiagram:
         for i in range(coords[0], coords[0]+dims[0]):
             row = []
             for j in range(coords[1], coords[1]+dims[1]):
-                row.append(TonalSystemElement(i*x.pitch_class + j*y.pitch_class, cardinality))
+                row.append(TonalSystemElement(i*x.pitch_class + j*y.pitch_class, system_size))
             matrix.append(row)
         return matrix
 

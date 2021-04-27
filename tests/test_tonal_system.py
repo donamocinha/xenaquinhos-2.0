@@ -11,7 +11,7 @@ class TestTonalSystem(unittest.TestCase):
     
     def test_get_generators(self):
         gens = [1, 5, 7, 11]
-        self.assertEqual([TonalSystemElement(x, 12) for x in gens], self.t1.get_generators())
+        self.assertEqual(gens, self.t1.get_generators())
     
     def test_set_generator(self):
         self.t1.set_generator(7)

@@ -13,7 +13,7 @@ class TonalSystem:
         self.cycle = GCycle(self.generator)
 
 
-    def scale(self, elements=[], struct=[]):
+    def scale(self, elements=[], struct=[], name='Generic Scale'):
         assert (len(elements)==0) ^ (len(struct)==0), "argument must be either elements or struct"
         if len(elements)!=0:
             elements.sort()
@@ -24,14 +24,14 @@ class TonalSystem:
 
             struct = tuple((circle_elements[i]-circle_elements[i-1]).pitch_class for i in range(1, len(circle_elements)))
 
-        return Scale(self.cardinality, struct)
+        return Scale(self.cardinality, struct, name=name)
 
     def diatonic_scale(self):
         return self.cycle.diatonic_scale(0)
 
     def get_generators(self):
         n = self.cardinality
-        return [TonalSystemElement(x, n) for x in range(n) if math.gcd(x, n)==1]
+        return [x for x in range(n) if math.gcd(x, n)==1]
 
     def set_generator(self, g: Union[TonalSystemElement, int]):
         if isinstance(g, int):

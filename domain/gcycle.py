@@ -39,12 +39,6 @@ class GCycle:
         real_elem = TonalSystemElement(elem, self.generator.module) if isinstance(elem, int) else elem
         next_index = (self.elements.index(real_elem) + steps) % len(self.elements)
         return copy.deepcopy(self.elements[next_index])
-    
-    def __str__(self):
-        resp_str = f'\n*************Cycle:***************\n'
-        resp_str += f'Elements: {[str(e) for e in self.elements]}\n'
-        #resp_str += f'Scale Sizes: {self.scale_sizes[0]} {self.scale_sizes[1]}'
-        return resp_str
 
     def show(self):
         r = 10
@@ -67,3 +61,9 @@ class GCycle:
         plt.axis('equal')
         plt.axis('off')
         plt.show()
+
+    def __str__(self):
+        resp_str = f'\n*************Cycle:***************\n'
+        resp_str += f'Elements: {[str(e) for e in self.elements]}\n'
+        #resp_str += f'Scale Sizes: {self.scale_sizes[0]} {self.scale_sizes[1]}'
+        return resp_str
